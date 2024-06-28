@@ -1,4 +1,4 @@
-add_rules("mode.release", "mode.debug")
+add_rules("mode.release")
 
 -- This Qt app:
 --    Windows:
@@ -12,7 +12,8 @@ add_rules("mode.release", "mode.debug")
 
 add_requires(
     "nlohmann_json 3.11.3",
-    "fmt 10.2.1"
+    "fmt 10.2.1",
+    "leveldb 1.23"
 )
 
 
@@ -34,16 +35,17 @@ target("ClipBoardQt")
     add_rules("qt.widgetapp")
 
     add_files(
-        "src/*.cpp",
-        "src/*.h",
-        "src/*.ui",
-        "src/*.qrc",
-        "src/*.rc"
+        "src/**.cpp",
+        "src/**.h",
+        "src/**.ui",
+        "src/**.qrc",
+        "src/**.rc"
     )
     add_includedirs("src")
     add_headerfiles("src/*.h")
 
     add_packages(
         "nlohmann_json",
-        "fmt"
+        "fmt",
+        "leveldb"
     )
