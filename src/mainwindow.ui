@@ -36,7 +36,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="documentMode">
      <bool>false</bool>
@@ -278,7 +278,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>启动时最小化到托盘</string>
+       <string>最小化到托盘</string>
       </property>
       <property name="checked">
        <bool>true</bool>

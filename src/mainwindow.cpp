@@ -1,11 +1,20 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "QMessageBox.h"
 #include "nlohmann/json.hpp"
+#include "qaction.h"
 #include "qapplication.h"
+#include "qicon.h"
 #include "qpushbutton.h"
+#include "qstringliteral.h"
+#include "qsystemtrayicon.h"
+#include <QMenu>
+#include <QSystemTrayIcon>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <memory>
+
 
 namespace fs = std::filesystem;
 using json   = nlohmann::json;
@@ -45,8 +54,40 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     updateWidgetToThis();
     loadConfig();
+
+    // 托盘
+    createSystemTray();
 }
 
+
+void MainWindow::closeEvent(QCloseEvent* ev) {
+    if (mIsMinTray) {
+        this->hide();
+        ev->ignore();
+        mTray->showMessage("Tip", "已最小化到托盘");
+    } else ev->accept();
+}
+
+void MainWindow::createSystemTray() {
+    // 托盘菜单按钮
+    auto show = new QAction(QStringLiteral("主界面"));
+    connect(show, &QAction::triggered, this, [this]() { this->show(); });
+
+    auto exit = new QAction(QStringLiteral("退出"));
+    connect(exit, &QAction::triggered, qApp, []() { QApplication::exit(); });
+
+    // 托盘菜单
+    QMenu* trayMenu = new QMenu(this);
+    trayMenu->addAction(show);
+    trayMenu->addAction(exit);
+
+    // 托盘
+    mTray = new QSystemTrayIcon(this);
+    mTray->show();
+    auto icon = mAppDir.string() + "/icon.ico"; // 图标路径
+    mTray->setIcon(QIcon(icon.c_str()));
+    mTray->setContextMenu(trayMenu);
+}
 
 bool MainWindow::updateWidgetToThis() {
     {
@@ -108,3 +149,5 @@ void MainWindow::on_mSettingSave_clicked() {
     updateWidgetToThis();
     saveConfig();
 }
+
+void MainWindow::on_mAddButton_clicked() {}

@@ -22,6 +22,15 @@ end
 
 
 target("ClipBoardQt")
+    add_cxflags(
+        "/utf-8"
+    )
+    add_defines(
+        "NOMINMAX",
+        "UNICODE"
+    )
+    set_symbols("debug")
+
     add_rules("qt.widgetapp")
 
     add_files(
