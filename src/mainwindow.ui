@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
-    <height>450</height>
+    <width>440</width>
+    <height>440</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,12 +31,12 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>440</width>
-      <height>430</height>
+      <width>420</width>
+      <height>420</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="documentMode">
      <bool>false</bool>
@@ -49,8 +49,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>370</y>
-        <width>330</width>
+        <y>360</y>
+        <width>300</width>
         <height>21</height>
        </rect>
       </property>
@@ -60,8 +60,8 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>331</width>
-        <height>311</height>
+        <width>300</width>
+        <height>300</height>
        </rect>
       </property>
      </widget>
@@ -82,7 +82,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>350</y>
+        <y>340</y>
         <width>171</width>
         <height>16</height>
        </rect>
@@ -94,8 +94,8 @@
      <widget class="QPushButton" name="mFilterButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>370</y>
+        <x>320</x>
+        <y>360</y>
         <width>80</width>
         <height>21</height>
        </rect>
@@ -107,8 +107,8 @@
      <widget class="QPushButton" name="mDeleteButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>150</y>
+        <x>320</x>
+        <y>90</y>
         <width>80</width>
         <height>30</height>
        </rect>
@@ -120,8 +120,8 @@
      <widget class="QPushButton" name="mAddButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>110</y>
+        <x>320</x>
+        <y>40</y>
         <width>80</width>
         <height>31</height>
        </rect>
@@ -130,24 +130,11 @@
        <string>插入</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="mLoadDataButton">
-      <property name="geometry">
-       <rect>
-        <x>350</x>
-        <y>30</y>
-        <width>80</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>加载</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="mOpenButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>310</y>
+        <x>320</x>
+        <y>290</y>
         <width>80</width>
         <height>30</height>
        </rect>
@@ -159,8 +146,8 @@
      <widget class="QPushButton" name="mCopyButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>230</y>
+        <x>320</x>
+        <y>190</y>
         <width>80</width>
         <height>30</height>
        </rect>
@@ -172,8 +159,8 @@
      <widget class="QPushButton" name="mEditButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>190</y>
+        <x>320</x>
+        <y>140</y>
         <width>80</width>
         <height>30</height>
        </rect>
@@ -182,24 +169,11 @@
        <string>编辑</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="mSaveButton">
-      <property name="geometry">
-       <rect>
-        <x>350</x>
-        <y>70</y>
-        <width>80</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>保存</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="mPasteButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>270</y>
+        <x>320</x>
+        <y>240</y>
         <width>80</width>
         <height>30</height>
        </rect>
@@ -218,12 +192,12 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>410</width>
+        <width>390</width>
         <height>30</height>
        </rect>
       </property>
       <property name="text">
-       <string>D:/#ClipBoardData</string>
+       <string>{APP}</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
@@ -242,8 +216,8 @@
      <widget class="QPushButton" name="mSettingSave">
       <property name="geometry">
        <rect>
-        <x>270</x>
-        <y>360</y>
+        <x>250</x>
+        <y>350</y>
         <width>75</width>
         <height>30</height>
        </rect>
@@ -255,8 +229,8 @@
      <widget class="QPushButton" name="mSettingSave2">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>360</y>
+        <x>330</x>
+        <y>350</y>
         <width>75</width>
         <height>30</height>
        </rect>

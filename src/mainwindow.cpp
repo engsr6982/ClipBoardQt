@@ -3,6 +3,7 @@
 #include "nlohmann/json.hpp"
 #include "qapplication.h"
 #include "qpushbutton.h"
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 
@@ -14,6 +15,18 @@ string toString(QString const& qstr) {
     return string((const char*)qstr.toLocal8Bit()); // QString转string(toStdString会崩溃)
 }
 
+string replace(string strSrc, string const& oldStr, string const& newStr, size_t count = -1) {
+    string strRet  = strSrc;
+    size_t pos     = 0;
+    int    l_count = 0;
+    if (-1 == count) count = strRet.size();
+    while ((pos = strRet.find(oldStr, pos)) != string::npos) {
+        strRet.replace(pos, oldStr.size(), newStr);
+        if (++l_count >= count) break;
+        pos += newStr.size();
+    }
+    return strRet;
+}
 
 MainWindow::~MainWindow() { delete ui; }
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -36,8 +49,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
 bool MainWindow::updateWidgetToThis() {
-    QString inputSavePath = ui->mSettingInputSavePath->text();
-    if (!inputSavePath.isEmpty()) mDataSavePath = toString(inputSavePath);
+    {
+        auto   inputSavePath = ui->mSettingInputSavePath->text();
+        string inputstr      = toString(inputSavePath);
+        // 替换路径变量 {APP}
+        mDataSavePath = replace(inputstr, "{APP}", mAppDir.string());
+    }
     mIsAutoStart       = ui->mSettingAutoStart->isChecked();
     mIsListenClipboard = ui->mSettingListenSystemClipBoard->isChecked();
     mIsMinTray         = ui->mSettingMinTray->isChecked();
