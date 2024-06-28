@@ -10,6 +10,12 @@ add_rules("mode.release", "mode.debug")
 --      Todo
 
 
+add_requires(
+    "nlohmann_json 3.11.3",
+    "fmt 10.2.1"
+)
+
+
 if not has_config("vs_runtime") then 
     set_runtimes("MD")
 end 
@@ -25,3 +31,8 @@ target("ClipBoardQt")
     )
     add_includedirs("src")
     add_headerfiles("src/*.h")
+
+    add_packages(
+        "nlohmann_json",
+        "fmt"
+    )
