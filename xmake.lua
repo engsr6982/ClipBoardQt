@@ -36,7 +36,9 @@ target("ClipBoardQt")
     add_files(
         "src/*.cpp",
         "src/*.h",
-        "src/*.ui"
+        "src/*.ui",
+        "src/*.qrc",
+        "src/*.rc"
     )
     add_includedirs("src")
     add_headerfiles("src/*.h")

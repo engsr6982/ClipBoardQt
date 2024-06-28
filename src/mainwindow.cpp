@@ -41,13 +41,15 @@ MainWindow::~MainWindow() { delete ui; }
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    // 限制缩放
+    mAppDir = toString(QApplication::applicationDirPath());
+
+    // 初始化
     setMaximumHeight(height());
     setMinimumHeight(height());
     setMaximumWidth(width());
     setMinimumWidth(width());
+    setWindowIcon(QIcon(":/logo.ico"));
 
-    mAppDir = toString(QApplication::applicationDirPath());
 
     // 应用按钮 连接 保存按钮
     connect(ui->mSettingSave2, &QPushButton::clicked, this, &MainWindow::on_mSettingSave_clicked);
@@ -84,8 +86,7 @@ void MainWindow::createSystemTray() {
     // 托盘
     mTray = new QSystemTrayIcon(this);
     mTray->show();
-    auto icon = mAppDir.string() + "/icon.ico"; // 图标路径
-    mTray->setIcon(QIcon(icon.c_str()));
+    mTray->setIcon(QIcon(":/logo.ico"));
     mTray->setContextMenu(trayMenu);
 }
 
