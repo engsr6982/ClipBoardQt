@@ -558,3 +558,9 @@ fabric.properties
 /.idea/
 /.vscode/
 /bin/
+
+
+
+
+!CmakeLists.txt
+!CMakeLists.txt.user
