@@ -9,6 +9,7 @@
 #include "qstringliteral.h"
 #include "qsystemtrayicon.h"
 #include <QMenu>
+#include <QSettings.h>
 #include <QSystemTrayIcon>
 #include <algorithm>
 #include <filesystem>
@@ -119,12 +120,14 @@ bool MainWindow::loadConfig() {
         mIsMinTray         = cache["min_tray"].get<bool>();
         mIsDeheavy         = cache["deheavy"].get<bool>();
 
+        updateOnSystemStartedRun();
         return updateThisToWidget();
     } catch (...) {
         return false;
     }
 }
 bool MainWindow::saveConfig() {
+    updateOnSystemStartedRun();
     fs::path cfg = mAppDir / "config.json";
 
     json c;
@@ -144,6 +147,18 @@ bool MainWindow::updateThisToWidget() {
     ui->mSettingMinTray->setChecked(mIsMinTray);
     ui->mSettingDeheavy->setChecked(mIsDeheavy);
     return true;
+}
+void MainWindow::updateOnSystemStartedRun() {
+    QString appName = QApplication::applicationName();
+
+    QSettings* set =
+        new QSettings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+    if (mIsAutoStart) {
+        QString dir = QApplication::applicationFilePath();
+        set->setValue(appName, dir.replace("/", "\\"));
+    } else {
+        set->remove(appName);
+    }
 }
 
 void MainWindow::on_mSettingSave_clicked() {

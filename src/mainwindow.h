@@ -43,6 +43,8 @@ public:
 
     void createSystemTray();
 
+    void updateOnSystemStartedRun(); // 开机自启
+
 private slots:
     void on_mSettingSave_clicked();
 
