@@ -58,6 +58,8 @@ private slots:
 
     void on_mDeleteButton_clicked();
 
+    void on_mEditButton_clicked();
+
 private:
     void closeEvent(QCloseEvent* ev) override; // 重写关闭事件
 

@@ -206,3 +206,32 @@ void MainWindow::on_mDeleteButton_clicked() {
     db->del(x_string(it->text()));
     delete it;
 }
+
+void MainWindow::on_mEditButton_clicked() {
+    int row = ui->mListWidget->currentRow();
+    if (row == -1) return;
+    auto it = ui->mListWidget->item(row);
+
+    bool    ok;
+    QString old  = it->text();
+    QString text = QInputDialog::getMultiLineText(this, "编辑", "编辑的内容", it->text(), &ok);
+
+    if (ok && !text.isEmpty()) {
+        if (text == old) return;
+
+        string val = x_string(text);
+        if (db->has(val)) {
+            auto its = ui->mListWidget->findItems(text, Qt::MatchExactly);
+            if (!its.isEmpty()) {
+                int  row = ui->mListWidget->row(its.first());
+                auto i   = ui->mListWidget->item(row);
+                i->setSelected(true);
+                ui->mListWidget->scrollToItem(i); // 移动到可见区域
+                return;
+            }
+        } else {
+            db->set(val, val);
+            it->setText(text);
+        }
+    }
+}
