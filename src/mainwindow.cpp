@@ -4,11 +4,15 @@
 #include "nlohmann/json.hpp"
 #include "qaction.h"
 #include "qapplication.h"
+#include "qclipboard.h"
+#include "qdesktopservices.h"
 #include "qicon.h"
 #include "qnamespace.h"
 #include "qpushbutton.h"
 #include "qstringliteral.h"
 #include "qsystemtrayicon.h"
+#include "qurl.h"
+#include "qwindowdefs.h"
 #include <QInputDialog>
 #include <QMenu>
 #include <QSettings.h>
@@ -73,6 +77,22 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     db->iter([this](std::string_view, std::string_view val) {
         ui->mListWidget->addItem(QString(string(val).c_str()));
         return true;
+    });
+
+
+    // 处理剪贴板
+    QClipboard* clip = QApplication::clipboard();
+    connect(clip, &QClipboard::dataChanged, this, [this, clip]() {
+        if (!mIsListenClipboard) return; // 不监听剪贴板
+
+        QString text = clip->text();
+        if (text.isEmpty()) return;
+
+        string val = x_string(text);
+        if (!db->has(val)) {
+            db->set(val, val);
+            ui->mListWidget->insertItem(0, text); // 插入到顶部
+        }
     });
 }
 
@@ -186,7 +206,7 @@ void MainWindow::on_mAddButton_clicked() {
         string val = x_string(text);
         if (!db->has(val)) {
             db->set(val, val);
-            ui->mListWidget->addItem(text);
+            ui->mListWidget->insertItem(0, text); // 插入到顶部
         } else {
             auto its = ui->mListWidget->findItems(text, Qt::MatchExactly);
             if (!its.isEmpty()) {
@@ -233,5 +253,51 @@ void MainWindow::on_mEditButton_clicked() {
             db->set(val, val);
             it->setText(text);
         }
+    }
+}
+
+void MainWindow::on_mCopyButton_clicked() {
+    int row = ui->mListWidget->currentRow();
+    if (row == -1) return;
+    auto it = ui->mListWidget->item(row);
+
+    QClipboard* clip = QApplication::clipboard();
+    clip->setText(it->text(), QClipboard::Clipboard);
+}
+
+void MainWindow::on_mPasteButton_clicked() {
+    QClipboard* clip = QApplication::clipboard();
+    QString     text = clip->text();
+
+    if (!text.isEmpty()) {
+        string val = x_string(text);
+        if (!db->has(val)) {
+            db->set(val, val);
+            ui->mListWidget->insertItem(0, text); // 插入到顶部
+        } else {
+            auto its = ui->mListWidget->findItems(text, Qt::MatchExactly);
+            if (!its.isEmpty()) {
+                int  row = ui->mListWidget->row(its.first());
+                auto i   = ui->mListWidget->item(row);
+                i->setSelected(true);
+                ui->mListWidget->scrollToItem(i); // 移动到可见区域
+            }
+        }
+    }
+}
+
+void MainWindow::on_mOpenButton_clicked() {
+    int row = ui->mListWidget->currentRow();
+    if (row == -1) return;
+    auto it = ui->mListWidget->item(row);
+    if (it->text().isEmpty()) return;
+
+    QString v = it->text();
+    if (v.startsWith("http://") || v.startsWith("https://")) {
+        QDesktopServices::openUrl(QUrl(v));
+    } else if (fs::exists(x_string(v))) {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(v));
+    } else {
+        QMessageBox::information(this, "Tip", "暂不支持打开此类型文件");
     }
 }

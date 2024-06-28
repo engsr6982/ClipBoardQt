@@ -60,6 +60,12 @@ private slots:
 
     void on_mEditButton_clicked();
 
+    void on_mCopyButton_clicked();
+
+    void on_mPasteButton_clicked();
+
+    void on_mOpenButton_clicked();
+
 private:
     void closeEvent(QCloseEvent* ev) override; // 重写关闭事件
 
