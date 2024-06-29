@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     createSystemTray();   // 托盘
 
     // 从数据库初始化
-    db = std::make_unique<KeyValueDB>(mAppDir);
+    db = std::make_unique<KeyValueDB>(mDataSavePath);
     db->iter([this](std::string_view, std::string_view val) {
         addItemToListWidget(QString(string(val).c_str()), false, false);
         return true;
