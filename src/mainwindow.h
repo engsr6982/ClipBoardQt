@@ -33,10 +33,10 @@ public:
 
 
     // 配置文件
-    string mDataSavePath;              // 保存路径
-    bool   mIsAutoStart       = true;  // 开机自启
-    bool   mIsListenClipboard = false; // 监听剪贴板
-    bool   mIsMinTray         = true;  // 最小化托盘
+    string mDataSavePath;      // 保存路径
+    bool   mIsAutoStart;       // 开机自启
+    bool   mIsListenClipboard; // 监听剪贴板
+    bool   mIsMinTray;         // 最小化托盘
     bool   loadConfig();
     bool   saveConfig();
     bool   updateWidgetToThis();
@@ -50,6 +50,7 @@ public:
 
     void createSystemTray();
     void updateOnSystemStartedRun(); // 开机自启
+    void addItemToListWidget(QString const& text, bool const insertToTop = true, bool const saveToDB = true);
 
 private slots:
     void on_mSettingSave_clicked();
@@ -65,6 +66,8 @@ private slots:
     void on_mPasteButton_clicked();
 
     void on_mOpenButton_clicked();
+
+    void on_mFilterButton_clicked();
 
 private:
     void closeEvent(QCloseEvent* ev) override; // 重写关闭事件

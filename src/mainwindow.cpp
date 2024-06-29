@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "QListWidget"
 #include "QMessageBox.h"
 #include "nlohmann/json.hpp"
 #include "qaction.h"
@@ -7,8 +8,11 @@
 #include "qclipboard.h"
 #include "qdesktopservices.h"
 #include "qicon.h"
+#include "qlistwidget.h"
 #include "qnamespace.h"
 #include "qpushbutton.h"
+#include "qscrollbar.h"
+#include "qsize.h"
 #include "qstringliteral.h"
 #include "qsystemtrayicon.h"
 #include "qurl.h"
@@ -75,7 +79,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     // 从数据库初始化
     db = std::make_unique<KeyValueDB>(mAppDir);
     db->iter([this](std::string_view, std::string_view val) {
-        ui->mListWidget->addItem(QString(string(val).c_str()));
+        addItemToListWidget(QString(string(val).c_str()), false, false);
         return true;
     });
 
@@ -90,8 +94,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
         string val = x_string(text);
         if (!db->has(val)) {
-            db->set(val, val);
-            ui->mListWidget->insertItem(0, text); // 插入到顶部
+            addItemToListWidget(text, true, true);
         }
     });
 }
@@ -192,10 +195,24 @@ void MainWindow::updateOnSystemStartedRun() {
         set->remove(appName);
     }
 }
+void MainWindow::addItemToListWidget(QString const& text, bool const insertToTop, bool const saveToDB) {
+    if (text.isEmpty()) return;
+    string v = x_string(text);
+    if (saveToDB && !db->has(v)) {
+        db->set(v, v);
+    }
+
+    QListWidgetItem* it = new QListWidgetItem(text);
+    it->setSizeHint(QSize(it->sizeHint().width(), 2)); // 设置高度
+    if (insertToTop) ui->mListWidget->insertItem(0, it);
+    else ui->mListWidget->addItem(it);
+}
+
 
 void MainWindow::on_mSettingSave_clicked() {
     updateWidgetToThis();
     saveConfig();
+    QMessageBox::information(this, "Tip", "保存成功");
 }
 
 void MainWindow::on_mAddButton_clicked() {
@@ -205,8 +222,7 @@ void MainWindow::on_mAddButton_clicked() {
     if (ok && !text.isEmpty()) {
         string val = x_string(text);
         if (!db->has(val)) {
-            db->set(val, val);
-            ui->mListWidget->insertItem(0, text); // 插入到顶部
+            addItemToListWidget(text, true, true);
         } else {
             auto its = ui->mListWidget->findItems(text, Qt::MatchExactly);
             if (!its.isEmpty()) {
@@ -256,13 +272,24 @@ void MainWindow::on_mEditButton_clicked() {
     }
 }
 
+#include "qmimedata.h"
 void MainWindow::on_mCopyButton_clicked() {
     int row = ui->mListWidget->currentRow();
     if (row == -1) return;
     auto it = ui->mListWidget->item(row);
 
-    QClipboard* clip = QApplication::clipboard();
-    clip->setText(it->text(), QClipboard::Clipboard);
+    QString     text     = it->text();
+    QClipboard* clip     = QApplication::clipboard();
+    QMimeData*  mimeData = new QMimeData();
+
+    if (text.startsWith("file:///")) {
+        QUrl fileUrl = QUrl::fromLocalFile(QUrl(text).toLocalFile());
+        mimeData->setUrls({fileUrl});
+    } else {
+        mimeData->setText(text);
+    }
+
+    clip->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
 void MainWindow::on_mPasteButton_clicked() {
@@ -272,8 +299,7 @@ void MainWindow::on_mPasteButton_clicked() {
     if (!text.isEmpty()) {
         string val = x_string(text);
         if (!db->has(val)) {
-            db->set(val, val);
-            ui->mListWidget->insertItem(0, text); // 插入到顶部
+            addItemToListWidget(text, true, true);
         } else {
             auto its = ui->mListWidget->findItems(text, Qt::MatchExactly);
             if (!its.isEmpty()) {
@@ -295,9 +321,45 @@ void MainWindow::on_mOpenButton_clicked() {
     QString v = it->text();
     if (v.startsWith("http://") || v.startsWith("https://")) {
         QDesktopServices::openUrl(QUrl(v));
-    } else if (fs::exists(x_string(v))) {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(v));
+    } else if (v.startsWith("file:///")) {
+        QString localPath = QUrl(v).toLocalFile();
+        if (fs::exists(x_string(localPath))) {
+            QDesktopServices::openUrl(QUrl::fromLocalFile(localPath));
+        } else {
+            QMessageBox::information(this, "Tip", "文件不存在");
+        }
     } else {
         QMessageBox::information(this, "Tip", "暂不支持打开此类型文件");
+    }
+}
+
+void MainWindow::on_mFilterButton_clicked() {
+    static bool isFilter = false;
+    QString     regex    = ui->mRegexpInput->text();
+
+    if (regex.isEmpty()) {
+        if (isFilter) {
+            isFilter = false;
+            for (int i = 0; i < ui->mListWidget->count(); i++) {
+                ui->mListWidget->item(i)->setHidden(false); // 显示所有项
+            }
+        }
+    } else {
+        try {
+            QRegularExpression re(regex);
+            if (!re.isValid()) {
+                throw std::runtime_error("Invalid regular expression");
+            }
+
+            isFilter = true;
+            for (int i = 0; i < ui->mListWidget->count(); i++) {
+                auto j = ui->mListWidget->item(i);
+                if (!re.match(j->text()).hasMatch()) {
+                    j->setHidden(true); // 隐藏不匹配项
+                }
+            }
+        } catch (const std::exception& e) {
+            QMessageBox::warning(this, "正则表达式错误", e.what());
+        }
     }
 }

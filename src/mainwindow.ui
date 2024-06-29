@@ -62,6 +62,9 @@
       </property>
      </widget>
      <widget class="QListWidget" name="mListWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -69,6 +72,21 @@
         <width>300</width>
         <height>300</height>
        </rect>
+      </property>
+      <property name="mouseTracking">
+       <bool>false</bool>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="gridSize">
+       <size>
+        <width>0</width>
+        <height>20</height>
+       </size>
       </property>
      </widget>
      <widget class="QLabel" name="label">
@@ -203,7 +221,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>{APP}</string>
+       <string>{APP}/data</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
@@ -271,7 +289,7 @@
        <string>开机自启动</string>
       </property>
       <property name="checked">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
      </widget>
      <widget class="QCheckBox" name="mSettingMinTray">
