@@ -34,8 +34,8 @@
 
 
 # https://github.com/github/gitignore/blob/main/CMake.gitignore
-CMakeLists.txt.user
-CMakeCache.txt
+CMakeLists.txt.**
+CMakeLists.txt.user.**
 CMakeFiles
 CMakeScripts
 Testing
@@ -551,16 +551,8 @@ fabric.properties
 # XMake
 /.xmake/
 /build/
-/CMakeLists.txt
-
 
 # Project specific ignores
 /.idea/
 /.vscode/
 /bin/
-
-
-
-
-!CmakeLists.txt
-!CMakeLists.txt.user

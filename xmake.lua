@@ -49,3 +49,7 @@ target("ClipBoardQt")
         "fmt",
         "leveldb"
     )
+
+    if is_plat("windows") then
+        add_files("src/Administrator.manifest")
+    end
