@@ -302,6 +302,19 @@
        <bool>false</bool>
       </property>
      </widget>
+     <widget class="QCheckBox" name="mSettingMinimizeStartUp">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>80</width>
+        <height>19</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>最小化启动</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

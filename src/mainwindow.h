@@ -37,6 +37,7 @@ public:
     bool   mIsAutoStart;       // 开机自启
     bool   mIsListenClipboard; // 监听剪贴板
     bool   mIsMinTray;         // 最小化托盘
+    bool   mMinimizeStartUp;   // 最小化启动
     bool   loadConfig();
     bool   saveConfig();
     bool   updateWidgetToThis();

@@ -115,6 +115,7 @@ bool MainWindow::loadConfig() {
         mIsAutoStart       = cache["auto_start"].get<bool>();
         mIsListenClipboard = cache["listen_system_clipboard"].get<bool>();
         mIsMinTray         = cache["min_tray"].get<bool>();
+        mMinimizeStartUp   = cache["minimize_start_up"].get<bool>();
 
         updateOnSystemStartedRun();
         return updateThisToWidget();
@@ -131,6 +132,8 @@ bool MainWindow::saveConfig() {
     c["auto_start"]              = mIsAutoStart;
     c["listen_system_clipboard"] = mIsListenClipboard;
     c["min_tray"]                = mIsMinTray;
+    c["minimize_start_up"]       = mMinimizeStartUp;
+
     std::ofstream o(cfg);
     o << c.dump(4);
     return true;
@@ -140,6 +143,7 @@ bool MainWindow::updateThisToWidget() {
     ui->mSettingAutoStart->setChecked(mIsAutoStart);
     ui->mSettingListenSystemClipBoard->setChecked(mIsListenClipboard);
     ui->mSettingMinTray->setChecked(mIsMinTray);
+    ui->mSettingMinimizeStartUp->setChecked(mMinimizeStartUp);
     return true;
 }
 bool MainWindow::updateWidgetToThis() {
@@ -152,6 +156,7 @@ bool MainWindow::updateWidgetToThis() {
     mIsAutoStart       = ui->mSettingAutoStart->isChecked();
     mIsListenClipboard = ui->mSettingListenSystemClipBoard->isChecked();
     mIsMinTray         = ui->mSettingMinTray->isChecked();
+    mMinimizeStartUp   = ui->mSettingMinimizeStartUp->isChecked();
     return true;
 }
 
@@ -175,6 +180,13 @@ void MainWindow::createSystemTray() {
     mTray->show();
     mTray->setIcon(QIcon(":/logo.ico"));
     mTray->setContextMenu(trayMenu);
+
+    // 连接托盘单击事件，直接打开主界面
+    connect(mTray, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+        if (reason == QSystemTrayIcon::Trigger) {
+            this->show();
+        }
+    });
 }
 void MainWindow::closeEvent(QCloseEvent* ev) {
     if (mIsMinTray) {

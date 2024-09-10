@@ -5,7 +5,7 @@ int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
     MainWindow   w;
 
-    if (!w.mIsMinTray) w.show();
+    if (!w.mMinimizeStartUp) w.show();
 
     return a.exec();
 }
